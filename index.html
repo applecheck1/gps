@@ -11,9 +11,10 @@
     <button onclick="detenerSeguimiento()">Detener Seguimiento</button>
     <p id="resultado">Ubicación: </p>
 
+    <a id="a"></a>
     <script>
         let watchId;
-
+        let a=document.getElementById("a")
         function iniciarSeguimiento() {
             if (navigator.geolocation) {
                 watchId = navigator.geolocation.watchPosition(
@@ -28,6 +29,8 @@
                             Ubicación: Lat ${lat}, Lon ${lon} <br>
                             Precisión: ±${accuracy} metros
                         `;
+                        a.href=`https://www.google.com/maps?q=${lat},${lon}`
+                        a.textContent=`https://www.google.com/maps?q=${lat},${lon}`
                     },
                     function(error) {
                         // Manejar errores
