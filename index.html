@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ubicación GPS Exacta</title>
+    <title>Ubicación GPS Precisa</title>
 </head>
 <body>
-    <h1>Obtener Ubicación GPS Exacta</h1>
-    <button onclick="obtenerUbicacion()">Obtener Ubicación</button>
+    <h1>Obtener Ubicación GPS Precisa</h1>
+    <button onclick="iniciarSeguimiento()">Iniciar Seguimiento</button>
+    <button onclick="detenerSeguimiento()">Detener Seguimiento</button>
     <p id="resultado">Ubicación: </p>
 
     <script>
-        function obtenerUbicacion() {
+        let watchId;
+
+        function iniciarSeguimiento() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
+                watchId = navigator.geolocation.watchPosition(
                     function(position) {
                         // Obtener latitud y longitud
                         const lat = position.coords.latitude;
@@ -47,12 +50,20 @@
                     },
                     {
                         enableHighAccuracy: true, // Solicitar precisión alta
-                        timeout: 10000,            // Aumentar el tiempo máximo a 10 segundos
-                        maximumAge: 0             // No usar caché
+                        timeout: 15000,            // Tiempo máximo de espera de 15 segundos
+                        maximumAge: 0,            // No usar caché
+                        frequency: 30000          // Actualizar cada 10 segundos
                     }
                 );
             } else {
                 document.getElementById('resultado').textContent = 'Geolocalización no es soportada por este navegador.';
+            }
+        }
+
+        function detenerSeguimiento() {
+            if (navigator.geolocation && watchId !== undefined) {
+                navigator.geolocation.clearWatch(watchId);
+                document.getElementById('resultado').textContent = 'Seguimiento detenido.';
             }
         }
     </script>
