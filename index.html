@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubicación GPS Exacta</title>
+</head>
+<body>
+    <h1>Obtener Ubicación GPS Exacta</h1>
+    <button onclick="obtenerUbicacion()">Obtener Ubicación</button>
+    <p id="resultado">Ubicación: </p>
+
+    <script>
+        function obtenerUbicacion() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        // Obtener latitud y longitud
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        const accuracy = position.coords.accuracy; // Precisión de la ubicación
+
+                        // Mostrar los datos en la página
+                        document.getElementById('resultado').innerHTML = `
+                            Ubicación: Lat ${lat}, Lon ${lon} <br>
+                            Precisión: ±${accuracy} metros
+                        `;
+                    },
+                    function(error) {
+                        // Manejar errores
+                        let mensajeError = 'No se pudo obtener la ubicación.';
+                        switch (error.code) {
+                            case error.PERMISSION_DENIED:
+                                mensajeError = 'El usuario denegó el permiso para obtener la ubicación.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                mensajeError = 'La información de la ubicación no está disponible.';
+                                break;
+                            case error.TIMEOUT:
+                                mensajeError = 'La solicitud para obtener la ubicación ha expirado.';
+                                break;
+                            case error.UNKNOWN_ERROR:
+                                mensajeError = 'Ocurrió un error desconocido.';
+                                break;
+                        }
+                        document.getElementById('resultado').textContent = mensajeError;
+                    },
+                    {
+                        enableHighAccuracy: true, // Solicitar precisión alta
+                        timeout: 5000,            // Tiempo máximo para obtener la ubicación
+                        maximumAge: 0            // No usar caché
+                    }
+                );
+            } else {
+                document.getElementById('resultado').textContent = 'Geolocalización no es soportada por este navegador.';
+            }
+        }
+    </script>
+</body>
+</html>
